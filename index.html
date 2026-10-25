@@ -1,0 +1,1332 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#173f35">
+  <meta name="description" content="明德账本：以中华传统美德为理念，培养理性消费与勤俭节约习惯的智能记账工具。">
+  <title>明德账本 · 传统美德智能记账本</title>
+  <link rel="manifest" href="./manifest.json">
+  <style>
+    :root {
+      --green: #173f35;
+      --green-light: #24594a;
+      --gold: #c5a46d;
+      --gold-light: #e5d4ad;
+      --paper: #f8f5ed;
+      --paper-dark: #eee8da;
+      --ink: #26372f;
+      --muted: #879087;
+      --danger: #b65c50;
+      --white: #fffdf8;
+      --shadow: 0 12px 35px rgba(29, 54, 42, .07);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      background: var(--paper);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 5% 0%, rgba(197,164,109,.10), transparent 35%),
+        var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.6;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 3px solid rgba(197,164,109,.65);
+      outline-offset: 3px;
+    }
+
+    .app-shell {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 28px 0 44px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .brand-seal {
+      display: grid;
+      place-items: center;
+      width: 49px;
+      height: 49px;
+      flex: 0 0 49px;
+      color: var(--gold-light);
+      background: var(--green);
+      border: 1px solid var(--gold);
+      border-radius: 13px 13px 13px 4px;
+      font-family: serif;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .brand h1 {
+      margin: 0;
+      color: var(--green);
+      font-family: "Songti SC", "SimSun", serif;
+      font-size: clamp(21px, 3vw, 28px);
+      letter-spacing: 2px;
+    }
+
+    .brand p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .local-status {
+      padding: 7px 12px;
+      color: var(--green);
+      background: rgba(36,89,74,.07);
+      border: 1px solid rgba(36,89,74,.13);
+      border-radius: 999px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(25px, 5vw, 44px);
+      color: var(--white);
+      background: var(--green);
+      border: 1px solid rgba(197,164,109,.7);
+      border-radius: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      position: absolute;
+      right: -24px;
+      bottom: -90px;
+      width: 270px;
+      height: 270px;
+      border: 1px solid rgba(229,212,173,.24);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 24px rgba(229,212,173,.035),
+        0 0 0 49px rgba(229,212,173,.035);
+      content: "";
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      color: var(--gold-light);
+      font-size: 12px;
+      letter-spacing: 3px;
+    }
+
+    .hero h2 {
+      position: relative;
+      z-index: 1;
+      margin: 12px 0 8px;
+      font-family: "Songti SC", "SimSun", serif;
+      font-size: clamp(27px, 5vw, 42px);
+      font-weight: 500;
+      letter-spacing: 3px;
+      line-height: 1.4;
+    }
+
+    .hero p {
+      position: relative;
+      z-index: 1;
+      max-width: 560px;
+      margin: 0;
+      color: #d9e1d9;
+      font-size: 14px;
+    }
+
+    .hero-motto {
+      position: relative;
+      z-index: 1;
+      display: inline-block;
+      margin-top: 23px;
+      padding: 7px 14px;
+      color: var(--gold-light);
+      border: 1px solid rgba(229,212,173,.45);
+      border-radius: 3px;
+      font-family: serif;
+      letter-spacing: 2px;
+    }
+
+    .period-section {
+      margin: 25px 0 20px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      color: var(--green);
+      font-family: "Songti SC", "SimSun", serif;
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .period-switch {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      padding: 6px;
+      background: var(--paper-dark);
+      border-radius: 12px;
+    }
+
+    .period-btn {
+      min-height: 43px;
+      color: #67736a;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      transition: .2s ease;
+    }
+
+    .period-btn:hover { color: var(--green); }
+
+    .period-btn.active {
+      color: var(--green);
+      background: var(--white);
+      border-color: rgba(197,164,109,.55);
+      box-shadow: 0 2px 8px rgba(23,63,53,.05);
+      font-weight: 700;
+    }
+
+    .date-range {
+      margin: 10px 2px 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 16px;
+      margin-bottom: 23px;
+    }
+
+    .stat-card {
+      padding: 23px;
+      background: var(--white);
+      border: 1px solid #e8e1d2;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card.primary {
+      color: var(--white);
+      background: linear-gradient(135deg, #173f35, #285848);
+      border-color: var(--gold);
+    }
+
+    .stat-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .primary .stat-label { color: #d7e1d8; }
+
+    .stat-value {
+      display: block;
+      margin: 12px 0 7px;
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: .5px;
+      overflow-wrap: anywhere;
+    }
+
+    .stat-foot {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .primary .stat-foot { color: #d7e1d8; }
+
+    .stat-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      color: var(--gold);
+      background: rgba(197,164,109,.12);
+      border-radius: 8px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      align-items: start;
+      gap: 20px;
+    }
+
+    .panel {
+      min-width: 0;
+      padding: 24px;
+      background: var(--white);
+      border: 1px solid #e8e1d2;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 5px;
+      color: var(--green);
+      font-family: "Songti SC", "SimSun", serif;
+      font-size: 21px;
+    }
+
+    .panel-desc {
+      margin: 0 0 21px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .form-group { margin-bottom: 17px; }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 7px;
+      color: #47564b;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      color: var(--ink);
+      background: #fbfaf6;
+      border: 1px solid #e5dfd1;
+      border-radius: 9px;
+      transition: border-color .2s;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--gold);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(197,164,109,.12);
+    }
+
+    .form-help {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      min-height: 48px;
+      color: #fffdf8;
+      background: var(--green);
+      border: 1px solid var(--gold);
+      border-radius: 9px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    .submit-btn:hover { background: var(--green-light); }
+    .submit-btn:active { transform: scale(.99); }
+
+    .virtue-card {
+      margin-top: 19px;
+      padding: 17px;
+      background: #f5f0e4;
+      border-left: 3px solid var(--gold);
+      border-radius: 4px 12px 12px 4px;
+    }
+
+    .virtue-card h4 {
+      margin: 0 0 8px;
+      color: var(--green);
+      font-family: "Songti SC", "SimSun", serif;
+      font-size: 16px;
+    }
+
+    .virtue-card p {
+      margin: 0;
+      color: #536054;
+      font-size: 13px;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .virtue-tag {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 3px 8px;
+      color: #80633a;
+      background: #e9d8b5;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .list-panel { padding: 24px; }
+
+    .list-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .count-pill {
+      padding: 5px 10px;
+      color: var(--green);
+      background: #edf1e9;
+      border-radius: 999px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .records { display: grid; gap: 10px; }
+
+    .record {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      padding: 13px;
+      border: 1px solid #eee9de;
+      border-radius: 12px;
+      animation: appear .22s ease-out;
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .record-icon {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      flex: 0 0 43px;
+      color: var(--green);
+      background: #edf0e8;
+      border-radius: 11px;
+      font-size: 19px;
+    }
+
+    .record-info { flex: 1; min-width: 0; }
+
+    .record-name {
+      overflow-wrap: anywhere;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .record-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px 9px;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .record-amount {
+      margin-left: auto;
+      color: var(--green);
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .delete-btn {
+      align-self: center;
+      padding: 6px 9px;
+      color: var(--danger);
+      background: transparent;
+      border: 1px solid #ead7d1;
+      border-radius: 7px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .delete-btn:hover {
+      color: #fff;
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .empty-state {
+      padding: 34px 15px;
+      color: var(--muted);
+      text-align: center;
+      border: 1px dashed #e3ddcf;
+      border-radius: 12px;
+    }
+
+    .empty-state .empty-icon {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-size: 30px;
+    }
+
+    .empty-state p { margin: 0; font-size: 13px; }
+
+    .list-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 15px;
+      padding-top: 13px;
+      color: var(--muted);
+      border-top: 1px solid #eee9de;
+      font-size: 12px;
+    }
+
+    .list-footer strong { color: var(--green); }
+
+    .footer {
+      padding: 30px 10px 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .footer .footer-motto {
+      margin-bottom: 7px;
+      color: var(--green);
+      font-family: "Songti SC", "SimSun", serif;
+      font-size: 15px;
+      letter-spacing: 2px;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 1000;
+      right: 20px;
+      bottom: 22px;
+      max-width: min(380px, calc(100vw - 40px));
+      padding: 12px 17px;
+      color: #fffdf8;
+      background: var(--green);
+      border: 1px solid var(--gold);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: .22s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (min-width: 1200px) {
+      .app-shell { padding-top: 35px; }
+    }
+
+    @media (max-width: 760px) {
+      .app-shell {
+        width: min(100% - 28px, 560px);
+        padding-top: 18px;
+      }
+
+      .topbar { margin-bottom: 20px; }
+      .brand { gap: 9px; }
+      .brand-seal {
+        width: 43px;
+        height: 43px;
+        flex-basis: 43px;
+        font-size: 23px;
+      }
+
+      .brand p { font-size: 10px; letter-spacing: 0; }
+      .local-status { padding: 6px 9px; font-size: 10px; }
+      .hero { border-radius: 18px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-card { padding: 16px; border-radius: 14px; }
+      .stat-value { font-size: clamp(21px, 5.5vw, 29px); }
+      .stat-label { font-size: 12px; }
+      .content-grid { grid-template-columns: 1fr; gap: 15px; }
+      .panel { padding: 19px; }
+      .section-heading h3 { font-size: 17px; }
+    }
+
+    @media (max-width: 380px) {
+      .app-shell { width: calc(100% - 20px); }
+      .brand h1 { font-size: 19px; letter-spacing: 1px; }
+      .local-status { max-width: 100px; white-space: normal; text-align: center; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .stat-card.primary { padding: 19px; }
+      .record { flex-wrap: wrap; gap: 9px; }
+      .record-info { flex-basis: calc(100% - 60px); }
+      .record-amount { margin-left: 52px; }
+      .delete-btn { margin-left: auto; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-seal" aria-hidden="true">明</div>
+        <div>
+          <h1>明德账本</h1>
+          <p>传统美德 · 现代生活</p>
+        </div>
+      </div>
+      <div class="local-status" title="账单存储在当前浏览器">
+        ◉ 本地安全记账
+      </div>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="eyebrow">MINGDE · WISE LIVING</div>
+      <h2 id="hero-title">知所取舍，方得从容。</h2>
+      <p>每一笔支出，都是一次生活选择。以账本观消费，以美德养习惯，让每一分钱都花得明白、花得值得。</p>
+      <div class="hero-motto">俭以养德 · 学以致用</div>
+    </section>
+
+    <section class="period-section" aria-labelledby="period-heading">
+      <div class="section-heading">
+        <h3 id="period-heading">时序观账</h3>
+        <span class="subtle">选择周期，回顾消费</span>
+      </div>
+      <div class="period-switch" role="group" aria-label="账单统计时间范围">
+        <button class="period-btn active" type="button" data-period="day" aria-pressed="true">日</button>
+        <button class="period-btn" type="button" data-period="week" aria-pressed="false">周</button>
+        <button class="period-btn" type="button" data-period="month" aria-pressed="false">月</button>
+        <button class="period-btn" type="button" data-period="year" aria-pressed="false">年</button>
+      </div>
+      <p class="date-range" id="date-range" aria-live="polite"></p>
+    </section>
+
+    <section class="stats-grid" aria-label="消费统计">
+      <article class="stat-card primary">
+        <div class="stat-label">
+          <span class="stat-icon" aria-hidden="true">¥</span>
+          <span id="total-label">今日总支出</span>
+        </div>
+        <strong class="stat-value" id="total-amount">¥0.00</strong>
+        <div class="stat-foot" id="total-foot">量入为出，惜物知足</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-label">
+          <span class="stat-icon" aria-hidden="true">卷</span>
+          <span>本期记账笔数</span>
+        </div>
+        <strong class="stat-value" id="record-count">0</strong>
+        <div class="stat-foot" id="average-amount">单笔平均 ¥0.00</div>
+      </article>
+    </section>
+
+    <div class="content-grid">
+      <section class="panel" aria-labelledby="form-title">
+        <h3 class="panel-title" id="form-title">✦ 记下一笔</h3>
+        <p class="panel-desc">如实记录，让消费更有方向。</p>
+
+        <form id="expense-form">
+          <div class="form-group">
+            <label for="expense-name">消费名称</label>
+            <input
+              id="expense-name"
+              name="name"
+              type="text"
+              placeholder="例如：购买英语四级资料"
+              maxlength="60"
+              autocomplete="off"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="expense-amount">消费金额（元）</label>
+            <input
+              id="expense-amount"
+              name="amount"
+              type="number"
+              min="0.01"
+              max="100000000"
+              step="0.01"
+              inputmode="decimal"
+              placeholder="0.00"
+              required
+            >
+            <span class="form-help">金额需大于 0，最多保留两位小数。</span>
+          </div>
+
+          <div class="form-group">
+            <label for="expense-category">消费类别</label>
+            <select id="expense-category" name="category" required>
+              <option value="日常必需">日常必需</option>
+              <option value="学习提升">学习提升</option>
+              <option value="餐饮外卖">餐饮外卖</option>
+              <option value="娱乐冲动">娱乐冲动</option>
+            </select>
+          </div>
+
+          <button class="submit-btn" type="submit">＋ 保存这笔账单</button>
+        </form>
+
+        <aside class="virtue-card" aria-live="polite" aria-atomic="true">
+          <span class="virtue-tag" id="advice-tag">每日修身</span>
+          <h4 id="advice-title">勤俭有度，明德于心</h4>
+          <p id="advice-text">记账不只是记录数字，更是培养理性消费的习惯。从每一笔小支出开始，学会珍惜资源。</p>
+        </aside>
+      </section>
+
+      <section class="panel list-panel" aria-labelledby="list-title">
+        <div class="list-header">
+          <div>
+            <h3 class="panel-title" id="list-title">账单拾录</h3>
+            <p class="panel-desc" style="margin-bottom:0">按记账时间倒序排列</p>
+          </div>
+          <span class="count-pill" id="list-count">0 笔记录</span>
+        </div>
+
+        <div class="records" id="records-list" aria-live="polite"></div>
+
+        <div class="list-footer">
+          <span>当前周期合计</span>
+          <strong id="list-total">¥0.00</strong>
+        </div>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-motto">饮水思源，取用有度</div>
+      <div>明德账本 · 让每一笔消费都有意义</div>
+      <div style="margin-top:5px">数据保存在本机浏览器，不会自动上传至服务器。</div>
+    </footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const STORAGE_KEY = "mingde-ledger-records-v1";
+      const PERIODS = {
+        day: { label: "今日", totalLabel: "今日总支出" },
+        week: { label: "本周", totalLabel: "本周总支出" },
+        month: { label: "本月", totalLabel: "本月总支出" },
+        year: { label: "今年", totalLabel: "今年总支出" }
+      };
+
+      const CATEGORIES = ["日常必需", "学习提升", "餐饮外卖", "娱乐冲动"];
+
+      const CATEGORY_ICONS = {
+        "日常必需": "◇",
+        "学习提升": "书",
+        "餐饮外卖": "食",
+        "娱乐冲动": "乐"
+      };
+
+      const $ = (id) => document.getElementById(id);
+
+      const els = {
+        form: $("expense-form"),
+        name: $("expense-name"),
+        amount: $("expense-amount"),
+        category: $("expense-category"),
+        totalLabel: $("total-label"),
+        totalAmount: $("total-amount"),
+        totalFoot: $("total-foot"),
+        recordCount: $("record-count"),
+        averageAmount: $("average-amount"),
+        dateRange: $("date-range"),
+        recordsList: $("records-list"),
+        listCount: $("list-count"),
+        listTotal: $("list-total"),
+        adviceTag: $("advice-tag"),
+        adviceTitle: $("advice-title"),
+        adviceText: $("advice-text"),
+        toast: $("toast")
+      };
+
+      let currentPeriod = "day";
+      let records = loadRecords();
+      let toastTimer = null;
+      let lastAdvice = {
+        tag: "每日修身",
+        title: "勤俭有度，明德于心",
+        text: "记账不只是记录数字，更是培养理性消费的习惯。从每一笔小支出开始，学会珍惜资源。"
+      };
+
+      function loadRecords() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return [];
+
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return [];
+
+          return parsed.filter((item) =>
+            item &&
+            typeof item.id === "string" &&
+            typeof item.name === "string" &&
+            item.name.trim().length > 0 &&
+            Number.isFinite(item.amount) &&
+            item.amount > 0 &&
+            CATEGORIES.includes(item.category) &&
+            Number.isFinite(item.timestamp) &&
+            !Number.isNaN(new Date(item.timestamp).getTime())
+          );
+        } catch (error) {
+          console.error("读取本地账单失败：", error);
+          return [];
+        }
+      }
+
+      function saveRecords() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+          return true;
+        } catch (error) {
+          console.error("保存本地账单失败：", error);
+          showToast("保存失败：浏览器存储空间可能不足，或存储权限受限。");
+          return false;
+        }
+      }
+
+      function money(value) {
+        return "¥" + (Number.isFinite(value) ? value : 0).toFixed(2);
+      }
+
+      function sumAmounts(items) {
+        return items.reduce((sum, item) => sum + item.amount, 0);
+      }
+
+      function pad(number) {
+        return String(number).padStart(2, "0");
+      }
+
+      function formatDateTime(timestamp) {
+        const d = new Date(timestamp);
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      }
+
+      function formatDate(date) {
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+      }
+
+      function startOfDay(date) {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      }
+
+      // 所有周期均使用左闭右开区间 [start, end)，避免边界重复。
+      // 周从星期一开始；月、年使用本地日历边界而非固定毫秒数。
+      function getPeriodBounds(period, reference = new Date()) {
+        const y = reference.getFullYear();
+        const m = reference.getMonth();
+        const d = reference.getDate();
+
+        if (period === "day") {
+          const start = new Date(y, m, d);
+          return { start, end: new Date(y, m, d + 1) };
+        }
+
+        if (period === "week") {
+          const start = startOfDay(reference);
+          const weekday = (start.getDay() + 6) % 7;
+          start.setDate(start.getDate() - weekday);
+          const end = new Date(start);
+          end.setDate(end.getDate() + 7);
+          return { start, end };
+        }
+
+        if (period === "month") {
+          return {
+            start: new Date(y, m, 1),
+            end: new Date(y, m + 1, 1)
+          };
+        }
+
+        return {
+          start: new Date(y, 0, 1),
+          end: new Date(y + 1, 0, 1)
+        };
+      }
+
+      function getPeriodRecords(period, reference = new Date()) {
+        const { start, end } = getPeriodBounds(period, reference);
+        const from = start.getTime();
+        const to = end.getTime();
+
+        return records
+          .filter((item) => item.timestamp >= from && item.timestamp < to)
+          .sort((a, b) => b.timestamp - a.timestamp);
+      }
+
+      function getRangeDescription(period, reference = new Date()) {
+        const { start, end } = getPeriodBounds(period, reference);
+
+        if (period === "day") {
+          return `统计范围：${formatDate(start)}（00:00 起，至次日 00:00 前）`;
+        }
+
+        const lastDay = new Date(end.getTime());
+        lastDay.setDate(lastDay.getDate() - 1);
+
+        if (period === "week") {
+          return `统计范围：${formatDate(start)} 至 ${formatDate(lastDay)}（周一至周日）`;
+        }
+
+        if (period === "month") {
+          return `统计范围：${yMonth(start)}（${formatDate(start)} 至 ${formatDate(lastDay)}）`;
+        }
+
+        return `统计范围：${start.getFullYear()} 年 01-01 至 ${formatDate(lastDay)}`;
+      }
+
+      function yMonth(date) {
+        return `${date.getFullYear()} 年 ${pad(date.getMonth() + 1)} 月`;
+      }
+
+      function renderStats() {
+        const now = new Date();
+        const visibleRecords = getPeriodRecords(currentPeriod, now);
+        const total = sumAmounts(visibleRecords);
+        const count = visibleRecords.length;
+        const average = count ? total / count : 0;
+
+        els.totalLabel.textContent = PERIODS[currentPeriod].totalLabel;
+        els.totalAmount.textContent = money(total);
+        els.totalFoot.textContent = count
+          ? `本期共记录 ${count} 笔消费`
+          : "量入为出，惜物知足";
+        els.recordCount.textContent = String(count);
+        els.averageAmount.textContent = `单笔平均 ${money(average)}`;
+        els.dateRange.textContent = getRangeDescription(currentPeriod, now);
+        els.listCount.textContent = `${count} 笔记录`;
+        els.listTotal.textContent = money(total);
+
+        return visibleRecords;
+      }
+
+      function createRecordElement(item) {
+        const article = document.createElement("article");
+        article.className = "record";
+
+        const icon = document.createElement("div");
+        icon.className = "record-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = CATEGORY_ICONS[item.category] || "◇";
+
+        const info = document.createElement("div");
+        info.className = "record-info";
+
+        const name = document.createElement("div");
+        name.className = "record-name";
+        name.textContent = item.name;
+
+        const meta = document.createElement("div");
+        meta.className = "record-meta";
+
+        const category = document.createElement("span");
+        category.textContent = item.category;
+
+        const date = document.createElement("time");
+        date.dateTime = new Date(item.timestamp).toISOString();
+        date.textContent = formatDateTime(item.timestamp);
+
+        meta.append(category, date);
+        info.append(name, meta);
+
+        const amount = document.createElement("div");
+        amount.className = "record-amount";
+        amount.textContent = "-" + money(item.amount);
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "delete-btn";
+        remove.textContent = "删除";
+        remove.setAttribute("aria-label", `删除账单：${item.name}`);
+        remove.addEventListener("click", () => deleteRecord(item.id));
+
+        article.append(icon, info, amount, remove);
+        return article;
+      }
+
+      function renderRecords(visibleRecords) {
+        els.recordsList.replaceChildren();
+
+        if (!visibleRecords.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty-state";
+
+          const icon = document.createElement("span");
+          icon.className = "empty-icon";
+          icon.setAttribute("aria-hidden", "true");
+          icon.textContent = "卷";
+
+          const message = document.createElement("p");
+          message.textContent = "此周期暂无账单。记下第一笔，让生活更有章法。";
+
+          empty.append(icon, message);
+          els.recordsList.append(empty);
+          return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        visibleRecords.forEach((item) => {
+          fragment.append(createRecordElement(item));
+        });
+        els.recordsList.append(fragment);
+      }
+
+      function render() {
+        const visibleRecords = renderStats();
+        renderRecords(visibleRecords);
+      }
+
+      function setAdvice(tag, title, text) {
+        lastAdvice = { tag, title, text };
+        els.adviceTag.textContent = tag;
+        els.adviceTitle.textContent = title;
+        els.adviceText.textContent = text;
+      }
+
+      // 微观建议：优先级依次为学习投入、较大娱乐支出、奶茶/外卖，
+      // 若同时命中多个规则，会在提示中补充其他命中项。
+      function getMicroAdvice(name, amount, category) {
+        const normalized = name.toLowerCase();
+        const hits = [];
+
+        if (
+          category === "学习提升" ||
+          /学习资料|教材|课本|练习册|参考书|考试资料|课程资料/.test(name)
+        ) {
+          hits.push({
+            tag: "好学之德",
+            title: "好学之德，贵在日积月累",
+            text: "愿意为知识投资，是对未来的长远规划。保持求知之心，让每一次学习投入都转化为成长。"
+          });
+        }
+
+        if (category === "娱乐冲动" && amount > 50) {
+          hits.push({
+            tag: "克己复礼",
+            title: "克己复礼，消费有度",
+            text: `这笔娱乐消费为 ${money(amount)}。不妨停下来想一想：它是否符合当下的预算与真正需要？理性选择，才能让快乐更长久。`
+          });
+        }
+
+        if (/奶茶|外卖/.test(normalized)) {
+          hits.push({
+            tag: "惜物知恩",
+            title: "一粥一饭，当思来处不易",
+            text: "一餐一饮皆来之不易。偶尔犒劳自己无妨，也可以多考虑自带饮品、合理点餐，减少浪费。"
+          });
+        }
+
+        if (hits.length > 1) {
+          const first = hits[0];
+          return {
+            ...first,
+            text: first.text + " 另外也提醒自己：" +
+              hits.slice(1).map((hit) => hit.title + "——" + hit.text).join(" ")
+          };
+        }
+
+        if (hits.length === 1) return hits[0];
+
+        if (category === "日常必需") {
+          return {
+            tag: "勤俭持家",
+            title: "取之有度，用之有节",
+            text: "合理安排日常开支，把必要的钱花在真正需要的地方。勤俭并非吝啬，而是懂得珍惜。"
+          };
+        }
+
+        return {
+          tag: "理性消费",
+          title: "知所取舍，方得从容",
+          text: "记录下这笔消费，也记下自己的选择。定期回顾账单，逐步建立适合自己的消费节奏。"
+        };
+      }
+
+      function getMacroAdvice(visibleRecords, period) {
+        const total = sumAmounts(visibleRecords);
+        const count = visibleRecords.length;
+        const byCategory = Object.fromEntries(
+          CATEGORIES.map((category) => [
+            category,
+            sumAmounts(visibleRecords.filter((item) => item.category === category))
+          ])
+        );
+
+        const learning = byCategory["学习提升"];
+        const entertainment = byCategory["娱乐冲动"];
+        const food = byCategory["餐饮外卖"];
+        const learningRatio = total > 0 ? learning / total : 0;
+        const entertainmentRatio = total > 0 ? entertainment / total : 0;
+        const foodRatio = total > 0 ? food / total : 0;
+        const label = PERIODS[period].label;
+
+        if (count === 0) {
+          return {
+            tag: `${label}修身建议`,
+            title: "静以修身，俭以养德",
+            text: `当前${label}还没有账单。可以先设定一个合理预算，并在发生支出后及时记录，让每一次消费都清晰可见。`
+          };
+        }
+
+        if (entertainmentRatio >= 0.3 && entertainment > 0) {
+          return {
+            tag: `${label}消费分析`,
+            title: "克己有度，让选择更从容",
+            text: `本${period === "day" ? "日" : period === "week" ? "周" : period === "month" ? "月" : "年"}支出 ${money(total)}，共 ${count} 笔。其中娱乐冲动类为 ${money(entertainment)}，占 ${Math.round(entertainmentRatio * 100)}%。娱乐支出占比偏高时，可以回顾哪些消费真正带来了满足感，尝试为非必要消费设定预算。`
+          };
+        }
+
+        if (learningRatio >= 0.3 && learning > 0) {
+          return {
+            tag: `${label}消费分析`,
+            title: "好学之德，值得持续投入",
+            text: `本期支出 ${money(total)}，共 ${count} 笔。学习提升投入 ${money(learning)}，占 ${Math.round(learningRatio * 100)}%，体现了对知识与成长的重视。建议继续保持学习计划，同时兼顾生活必需与预算平衡。`
+          };
+        }
+
+        if (foodRatio >= 0.4 && food > 0) {
+          return {
+            tag: `${label}消费分析`,
+            title: "一粥一饭，当思来处不易",
+            text: `本期餐饮外卖支出 ${money(food)}，占总支出的 ${Math.round(foodRatio * 100)}%。可以适当规划每周餐饮预算、减少临时点单，在照顾好自己的同时减少浪费。`
+          };
+        }
+
+        return {
+          tag: `${label}消费分析`,
+          title: "量入为出，收支有度",
+          text: `本期共记录 ${count} 笔支出，合计 ${money(total)}。${learning > 0 ? `学习提升投入 ${money(learning)}，` : ""}${entertainment > 0 ? `娱乐支出 ${money(entertainment)}，` : ""}建议继续定期回顾各类开销，区分必要支出与可调整支出，让消费计划更贴合实际。`
+        };
+      }
+
+      function showToast(message) {
+        els.toast.textContent = message;
+        els.toast.classList.add("show");
+        if (toastTimer !== null) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          els.toast.classList.remove("show");
+          toastTimer = null;
+        }, 2600);
+      }
+
+      function deleteRecord(id) {
+        const target = records.find((item) => item.id === id);
+        if (!target) return;
+
+        if (!window.confirm(`确定删除“${target.name}”这笔账单吗？`)) {
+          return;
+        }
+
+        const oldRecords = records;
+        records = records.filter((item) => item.id !== id);
+
+        if (!saveRecords()) {
+          records = oldRecords;
+          return;
+        }
+
+        render();
+        setAdvice(
+          "惜物知账",
+          "有删有留，账目清明",
+          `已删除“${target.name}”。账单统计已实时更新，继续保持清晰、有度的消费习惯。`
+        );
+        showToast("账单已删除");
+      }
+
+      function switchPeriod(period) {
+        if (!Object.prototype.hasOwnProperty.call(PERIODS, period)) return;
+        currentPeriod = period;
+
+        document.querySelectorAll(".period-btn").forEach((button) => {
+          const active = button.dataset.period === period;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+
+        render();
+
+        const visibleRecords = getPeriodRecords(currentPeriod);
+        const advice = getMacroAdvice(visibleRecords, currentPeriod);
+        setAdvice(advice.tag, advice.title, advice.text);
+      }
+
+      els.form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const name = els.name.value.trim();
+        const rawAmount = els.amount.value.trim();
+        const amount = Number(rawAmount);
+        const category = els.category.value;
+
+        if (!name) {
+          showToast("请填写消费名称");
+          els.name.focus();
+          return;
+        }
+
+        if (
+          !rawAmount ||
+          !Number.isFinite(amount) ||
+          amount <= 0 ||
+          amount > 100000000
+        ) {
+          showToast("请输入大于 0 且不超过 1 亿元的有效金额");
+          els.amount.focus();
+          return;
+        }
+
+        if (Math.round(amount * 100) / 100 !== amount) {
+          showToast("金额最多只能保留两位小数");
+          els.amount.focus();
+          return;
+        }
+
+        if (!CATEGORIES.includes(category)) {
+          showToast("请选择有效的消费类别");
+          return;
+        }
+
+        const record = {
+          id: (window.crypto && typeof window.crypto.randomUUID === "function")
+            ? window.crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          name,
+          amount: Math.round(amount * 100) / 100,
+          category,
+          timestamp: Date.now()
+        };
+
+        records.push(record);
+
+        if (!saveRecords()) {
+          records = records.filter((item) => item.id !== record.id);
+          return;
+        }
+
+        els.form.reset();
+        els.category.value = "日常必需";
+
+        render();
+
+        const advice = getMicroAdvice(record.name, record.amount, record.category);
+        setAdvice(advice.tag, advice.title, advice.text);
+        showToast("记账成功，已保存至本地");
+
+        // 不自动更改用户所选周期。若新账单不属于当前周期，
+        // 列表和总额仍严格按当前周期显示。
+      });
+
+      document.querySelectorAll(".period-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          switchPeriod(button.dataset.period);
+        });
+      });
+
+      // 处理页面跨日停留：统计周期在本地日期变化后自动刷新。
+      let lastLocalDate = formatDate(new Date());
+      setInterval(() => {
+        const today = formatDate(new Date());
+        if (today !== lastLocalDate) {
+          lastLocalDate = today;
+          render();
+          const advice = getMacroAdvice(
+            getPeriodRecords(currentPeriod),
+            currentPeriod
+          );
+          setAdvice(advice.tag, advice.title, advice.text);
+        }
+      }, 30000);
+
+      render();
+      const initialAdvice = getMacroAdvice(
+        getPeriodRecords(currentPeriod),
+        currentPeriod
+      );
+      setAdvice(initialAdvice.tag, initialAdvice.title, initialAdvice.text);
+
+      if ("serviceWorker" in navigator && window.isSecureContext) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js")
+            .then((registration) => {
+              console.info("Service Worker 注册成功：", registration.scope);
+            })
+            .catch((error) => {
+              console.error("Service Worker 注册失败：", error);
+            });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

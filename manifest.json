@@ -1,0 +1,22 @@
+
+{
+  "id": "./index.html",
+  "name": "明德账本 · 传统美德智能记账本",
+  "short_name": "明德账本",
+  "description": "以中华传统美德为理念，培养理性消费与勤俭节约习惯的智能记账工具。",
+  "lang": "zh-CN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#173f35",
+  "background_color": "#f8f5ed",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%23173f35'/%3E%3Crect x='32' y='32' width='448' height='448' rx='76' fill='none' stroke='%23c5a46d' stroke-width='8'/%3E%3Ctext x='256' y='320' text-anchor='middle' font-size='240' font-family='serif' font-weight='bold' fill='%23e5d4ad'%3E%E6%98%8E%3C/text%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
